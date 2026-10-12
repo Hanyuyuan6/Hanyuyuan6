@@ -46,7 +46,7 @@ C = {"bg0": "#0b1220", "bg1": "#132438", "border": "#2a3a4d", "ink": "#eef3f8", 
 
 NAME = "Yuyuan Han"
 EYEBROW = "Single-pixel imaging · Image-free sensing"           # set in capitals, 41 characters
-LINE = "Teaching machines to see from raw measurements, not images."
+LINE = "Teaching robots to read the physics in raw sensor data."
 AFFILIATIONS = ("PhD student, Xi’an Jiaotong University", "Visiting PhD student, Politecnico di Milano")
 STRESS_LINES = (  # any positioning line of up to nine words must fit both banners
     "Teaching machines to see with a single pixel.",
@@ -355,11 +355,11 @@ def build(faces, line, eyebrow, out: Path | None):
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--fonts", type=Path, required=True, help="folder with NotoSans-Regular/Bold.ttf")
-    parser.add_argument("--line", default=LINE, help="positioning line (up to nine words)")
+    parser.add_argument("--line", default=LINE, help="positioning line (up to twelve words)")
     parser.add_argument("--eyebrow", default=EYEBROW, help="eyebrow, at most 50 characters (set in capitals)")
     args = parser.parse_args()
-    if len(args.line.split()) > 9:
-        raise SystemExit("the positioning line has more than nine words")
+    if len(args.line.split()) > 12:
+        raise SystemExit("the positioning line has more than twelve words")
     faces = {k: Face(args.fonts / f"NotoSans-{v}.ttf") for k, v in (("regular", "Regular"), ("bold", "Bold"))}
     for alternative in STRESS_LINES:             # layouts must hold for other lines too
         build(faces, alternative, args.eyebrow, None)
