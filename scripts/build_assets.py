@@ -46,7 +46,7 @@ C = {"bg0": "#0b1220", "bg1": "#132438", "border": "#2a3a4d", "ink": "#eef3f8", 
 
 NAME = "Yuyuan Han"
 EYEBROW = "Single-pixel imaging · Image-free sensing"           # set in capitals, 41 characters
-LINE = "Teaching machines to understand raw measurements, not images."
+LINE = "Teaching machines to see from raw measurements, not images."
 AFFILIATIONS = ("PhD student, Xi’an Jiaotong University", "Visiting PhD student, Politecnico di Milano")
 STRESS_LINES = (  # any positioning line of up to nine words must fit both banners
     "Teaching machines to see with a single pixel.",
@@ -56,11 +56,11 @@ STRESS_LINES = (  # any positioning line of up to nine words must fit both banne
 )
 CARDS = [  # description line breaks are set by hand (sense first), then checked to fit
     {"slug": "stsf-tpls", "kind": "Paper + code", "name": "STSF-TPLS", "venue": "arXiv 2026", "language": "PyTorch",
-     "text": ("Segment straight from single-pixel measurements:", "near-constant accuracy down to 0.78% sampling.")},
+     "text": ("Segmentation directly from single-pixel measurements:", "near-constant accuracy down to 0.78% sampling.")},
     {"slug": "remote-gpu-trainer", "kind": "Open-source tool", "name": "remote-gpu-trainer", "venue": "60+ stars",
-     "language": "Python", "text": ("Agent skill for Claude Code and Codex:", "run, verify and deliver GPU experiments.")},
+     "language": "Python", "text": ("Agent skill for Claude Code and Codex that", "runs, verifies and delivers GPU experiments.")},
     {"slug": "shsi", "kind": "Paper + code", "name": "SHSI", "venue": "Optics Express 2025", "language": "MATLAB",
-     "text": ("Hadamard patterns with tunable sparsity:", "robust through scattering and noise, low memory.")},
+     "text": ("Hadamard patterns with tunable sparsity:", "noise-robust imaging through scattering, low memory.")},
     {"slug": "ldgi", "kind": "Paper + code", "name": "LDGI", "venue": "Optics Communications 2025", "language": "MATLAB",
      "text": ("Loop differential ghost imaging for", "optical phased arrays: orders-of-magnitude gains.")},
 ]

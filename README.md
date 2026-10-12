@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://hanyuyuan6.github.io/"><img src="assets/hero.svg" width="100%" alt="Yuyuan Han. Teaching machines to understand raw measurements, not images. PhD student, Xi'an Jiaotong University; visiting PhD student, Politecnico di Milano."></a>
+  <a href="https://hanyuyuan6.github.io/"><img src="assets/hero.svg" width="100%" alt="Yuyuan Han. Teaching machines to see from raw measurements, not images. PhD student, Xi'an Jiaotong University; visiting PhD student, Politecnico di Milano."></a>
   <br>
   <sub>The trace is my portrait as a single-pixel camera would record it: 192 Walsh–Hadamard measurements, drawn to scale.</sub>
 </p>
@@ -12,17 +12,18 @@
   <a href="mailto:hanyuyuan6@gmail.com"><img src="https://img.shields.io/badge/Email-hanyuyuan6@gmail.com-D14836?style=flat-square&logo=gmail&logoColor=white" alt="Email: hanyuyuan6@gmail.com"></a>
 </p>
 
-My long-term goal is for the AI in future robots to understand raw sensor data directly: the physical parameters, the equations and the world behind every signal. Today I work on the extreme case, a single-pixel camera that records one number per illumination pattern and never forms an image; I design those measurements and train networks that act on the raw signal.
+I work on single-pixel imaging and image-free sensing: I design optical measurements and train networks that operate directly on the measurement sequence, without first reconstructing an image. A single-pixel camera illuminates a scene with structured patterns and records one value per pattern with a single detector; I study how much a machine can perceive from those values alone.
 
-- **Now:** Acquisition-aware single-pixel sensing with optical-bench tests (manuscript in preparation); language tasks from raw single-pixel measurements (exploratory). Planned at Politecnico di Milano: time-domain diffuse optical tomography.
-- **Open to:** research collaborations and research internships in computational imaging, image-free sensing and machine perception.
+- **Now:** Acquisition-aware single-pixel sensing with optical-bench tests (manuscript in preparation); question answering on single-pixel measurements (exploratory). Planned at Politecnico di Milano: time-domain diffuse optical tomography.
+- **Long term:** Robotic systems that infer physical parameters and interpret their surroundings directly from raw measurements, guided by physical models.
+- **Open to:** research collaborations and internships in computational imaging, image-free sensing and machine perception.
 
 ### Featured work
 
 <p align="center">
-  <a href="https://github.com/Hanyuyuan6/STSF-TPLS"><img src="assets/card-stsf-tpls.svg" width="400" alt="STSF-TPLS (arXiv 2026, PyTorch): segment straight from single-pixel measurements; near-constant accuracy down to 0.78% sampling."></a>
+  <a href="https://github.com/Hanyuyuan6/STSF-TPLS"><img src="assets/card-stsf-tpls.svg" width="400" alt="STSF-TPLS (arXiv 2026, PyTorch): segmentation directly from single-pixel measurements; near-constant accuracy down to 0.78% sampling."></a>
   <a href="https://github.com/Hanyuyuan6/remote-gpu-trainer"><img src="assets/card-remote-gpu-trainer.svg" width="400" alt="remote-gpu-trainer (60+ stars, Python): agent skill for Claude Code and Codex that runs, verifies and delivers GPU experiments."></a>
-  <a href="https://github.com/Hanyuyuan6/SHSI"><img src="assets/card-shsi.svg" width="400" alt="SHSI (Optics Express 2025, MATLAB): Hadamard patterns with tunable sparsity; robust through scattering and noise, low memory."></a>
+  <a href="https://github.com/Hanyuyuan6/SHSI"><img src="assets/card-shsi.svg" width="400" alt="SHSI (Optics Express 2025, MATLAB): Hadamard patterns with tunable sparsity; noise-robust imaging through scattering, low memory."></a>
   <a href="https://github.com/Hanyuyuan6/LDGI"><img src="assets/card-ldgi.svg" width="400" alt="LDGI (Optics Communications 2025, MATLAB): loop differential ghost imaging for optical phased arrays; orders-of-magnitude gains."></a>
 </p>
 
