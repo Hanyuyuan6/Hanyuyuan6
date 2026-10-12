@@ -6,7 +6,7 @@ Walsh-Hadamard measurements (sequency order, DC term omitted, normalised to [-1,
 single-pixel camera would record of the public 64x64 portrait on hanyuyuan6.github.io.
 Traces pass through real samples at their real, linear amplitudes. Between samples they
 follow a shape-preserving (monotone) cubic, so every peak and trough drawn is a measured
-value and nothing is smoothed away. The amber square marks the newest sample: the pixel.
+value and nothing is smoothed away. The gold square marks the newest sample: the pixel.
 
 Text is shaped with HarfBuzz and outlined from Noto Sans (SIL OFL 1.1), so the SVGs embed
 no fonts and render the same everywhere. One dark design serves both GitHub themes: README
@@ -39,10 +39,10 @@ ROOT = Path(__file__).resolve().parent.parent
 ASSETS = ROOT / "assets"
 SIGNAL = json.loads((ROOT / "data" / "portrait-signal.json").read_text(encoding="utf-8"))["values"]
 
-# Brand palette, unchanged. Rule: type is neutral (ink, muted); colour belongs to the data
-# (the trace runs blue -> mint, earliest to latest sample); amber is reserved for the pixel.
-C = {"bg0": "#0b1220", "bg1": "#132438", "border": "#2a3a4d", "ink": "#eef3f8", "muted": "#9aa7b5",
-     "blue": "#7db7e8", "mint": "#8fe3d4", "amber": "#ffd166"}
+# Brand palette: purple, gold and black. Rule: type is neutral (ink, muted); colour belongs to the
+# data (the trace runs deep -> light purple, earliest to latest sample); gold is reserved for the pixel.
+C = {"bg0": "#0b0a10", "bg1": "#1a1426", "border": "#2e2540", "ink": "#f3efff", "muted": "#a9a1bd",
+     "trace": "#8b5cf6", "trace_to": "#c4b5fd", "pixel": "#f5c33b"}
 
 NAME = "Yuyuan Han"
 EYEBROW = "Single-pixel imaging · Image-free sensing"           # set in capitals, 41 characters
@@ -141,7 +141,7 @@ class Canvas:
         self.boxes.append(("signal", "trace", (min(xs), min(ys) - half, max(xs), max(ys) + half)))
         if head:
             hx, hy = points[-1]
-            self.parts.append(f'<rect x="{hx - head / 2:.2f}" y="{hy - head / 2:.2f}" width="{head:g}" height="{head:g}" fill="{C["amber"]}"/>')
+            self.parts.append(f'<rect x="{hx - head / 2:.2f}" y="{hy - head / 2:.2f}" width="{head:g}" height="{head:g}" fill="{C["pixel"]}"/>')
             self.boxes.append(("signal", "pixel", (hx - head / 2, hy - head / 2, hx + head / 2, hy + head / 2)))
 
 
@@ -172,9 +172,9 @@ def monotone_path(points) -> str:
 
 
 def gradient(uid, x0, x1):
-    """The trace colour runs blue -> mint from the first sample shown to the last."""
+    """The trace colour runs deep -> light purple from the first sample shown to the last."""
     return (f'<linearGradient id="{uid}-sig" gradientUnits="userSpaceOnUse" x1="{x0:g}" y1="0" x2="{x1:g}" y2="0">'
-            f'<stop offset="0" stop-color="{C["blue"]}"/><stop offset="1" stop-color="{C["mint"]}"/></linearGradient>')
+            f'<stop offset="0" stop-color="{C["trace"]}"/><stop offset="1" stop-color="{C["trace_to"]}"/></linearGradient>')
 
 
 def document(canvas: Canvas, title: str, desc: str, defs: str, radius: float) -> str:
@@ -255,7 +255,7 @@ def hero_horizon(faces, line=LINE, eyebrow=EYEBROW, samples=192):
     cv.trace(points, 2.0, head=head)
     desc = (f"The trace is his portrait as a single-pixel camera would record it: the first {samples} of 4,096 "
             "two-dimensional Walsh-Hadamard measurements after the DC term, in sequency order, drawn to linear scale; "
-            "the amber square is the newest sample.")
+            "the gold square is the newest sample.")
     return document(cv, _hero_title(line), desc, gradient(cv.uid, M, W - M), 18), cv
 
 
