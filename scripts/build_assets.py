@@ -46,7 +46,7 @@ C = {"bg0": "#0b1220", "bg1": "#132438", "border": "#2a3a4d", "ink": "#eef3f8", 
 
 NAME = "Yuyuan Han"
 EYEBROW = "Single-pixel imaging · Image-free sensing"           # set in capitals, 41 characters
-LINE = "Teaching robots to read the physics in raw sensor data."
+LINE = "Teaching machines to understand raw measurements, not images."
 AFFILIATIONS = ("PhD student, Xi’an Jiaotong University", "Visiting PhD student, Politecnico di Milano")
 STRESS_LINES = (  # any positioning line of up to nine words must fit both banners
     "Teaching machines to see with a single pixel.",

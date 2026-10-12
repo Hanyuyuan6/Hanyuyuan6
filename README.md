@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://hanyuyuan6.github.io/"><img src="assets/hero.svg" width="100%" alt="Yuyuan Han. Teaching robots to read the physics in raw sensor data. PhD student, Xi'an Jiaotong University; visiting PhD student, Politecnico di Milano."></a>
+  <a href="https://hanyuyuan6.github.io/"><img src="assets/hero.svg" width="100%" alt="Yuyuan Han. Teaching machines to understand raw measurements, not images. PhD student, Xi'an Jiaotong University; visiting PhD student, Politecnico di Milano."></a>
   <br>
   <sub>The trace is my portrait as a single-pixel camera would record it: 192 Walsh–Hadamard measurements, drawn to scale.</sub>
 </p>
@@ -12,7 +12,7 @@
   <a href="mailto:hanyuyuan6@gmail.com"><img src="https://img.shields.io/badge/Email-hanyuyuan6@gmail.com-D14836?style=flat-square&logo=gmail&logoColor=white" alt="Email: hanyuyuan6@gmail.com"></a>
 </p>
 
-I want the AI in future robots to understand raw sensor data directly: the physical parameters, the equations and the world behind every signal. I start from the extreme case, a single-pixel camera that records one number per illumination pattern and never forms an image; I design those measurements and train networks that act on the raw signal.
+My long-term goal is for the AI in future robots to understand raw sensor data directly: the physical parameters, the equations and the world behind every signal. Today I work on the extreme case, a single-pixel camera that records one number per illumination pattern and never forms an image; I design those measurements and train networks that act on the raw signal.
 
 - **Now:** Acquisition-aware single-pixel sensing with optical-bench tests (manuscript in preparation); language tasks from raw single-pixel measurements (exploratory). Planned at Politecnico di Milano: time-domain diffuse optical tomography.
 - **Open to:** research collaborations and research internships in computational imaging, image-free sensing and machine perception.
