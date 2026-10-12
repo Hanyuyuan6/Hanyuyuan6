@@ -5,11 +5,11 @@
 </p>
 
 <p align="center">
-  <a href="https://hanyuyuan6.github.io/"><img src="https://img.shields.io/badge/Website-hanyuyuan6.github.io-205b87?style=flat-square" alt="Website: hanyuyuan6.github.io"></a>
-  <a href="https://scholar.google.com/citations?user=-cRrxLRR3vgC&hl=en"><img src="https://img.shields.io/badge/Google_Scholar-4285F4?style=flat-square&logo=googlescholar&logoColor=white" alt="Google Scholar"></a>
-  <a href="https://orcid.org/0009-0005-7643-6331"><img src="https://img.shields.io/badge/ORCID-A6CE39?style=flat-square&logo=orcid&logoColor=white" alt="ORCID 0009-0005-7643-6331"></a>
-  <a href="https://www.linkedin.com/in/yuyuan-han-874818440/"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square" alt="LinkedIn"></a>
-  <a href="mailto:hanyuyuan6@gmail.com"><img src="https://img.shields.io/badge/Email-hanyuyuan6@gmail.com-D14836?style=flat-square&logo=gmail&logoColor=white" alt="Email: hanyuyuan6@gmail.com"></a>
+  <a href="https://hanyuyuan6.github.io/"><img src="assets/badge-website.svg" alt="Website: hanyuyuan6.github.io"></a>
+  <a href="https://scholar.google.com/citations?user=-cRrxLRR3vgC&hl=en"><img src="assets/badge-scholar.svg" alt="Google Scholar"></a>
+  <a href="https://orcid.org/0009-0005-7643-6331"><img src="assets/badge-orcid.svg" alt="ORCID 0009-0005-7643-6331"></a>
+  <a href="https://www.linkedin.com/in/yuyuan-han-874818440/"><img src="assets/badge-linkedin.svg" alt="LinkedIn"></a>
+  <a href="mailto:hanyuyuan6@gmail.com"><img src="assets/badge-email.svg" alt="Email: hanyuyuan6@gmail.com"></a>
 </p>
 
 I work on single-pixel imaging and image-free sensing: I design optical measurements and train networks that operate directly on the measurement sequence, without first reconstructing an image. A single-pixel camera illuminates a scene with structured patterns and records one value per pattern with a single detector; I study how much a machine can perceive from those values alone.
@@ -21,10 +21,10 @@ I work on single-pixel imaging and image-free sensing: I design optical measurem
 ### Featured work
 
 <p align="center">
-  <a href="https://github.com/Hanyuyuan6/STSF-TPLS"><img src="assets/card-stsf-tpls.svg" width="400" alt="STSF-TPLS (arXiv 2026, PyTorch): segmentation directly from single-pixel measurements; near-constant accuracy down to 0.78% sampling."></a>
-  <a href="https://github.com/Hanyuyuan6/remote-gpu-trainer"><img src="assets/card-remote-gpu-trainer.svg" width="400" alt="remote-gpu-trainer (60+ stars, Python): agent skill for Claude Code and Codex that runs, verifies and delivers GPU experiments."></a>
-  <a href="https://github.com/Hanyuyuan6/SHSI"><img src="assets/card-shsi.svg" width="400" alt="SHSI (Optics Express 2025, MATLAB): Hadamard patterns with tunable sparsity; noise-robust imaging through scattering, low memory."></a>
-  <a href="https://github.com/Hanyuyuan6/LDGI"><img src="assets/card-ldgi.svg" width="400" alt="LDGI (Optics Communications 2025, MATLAB): loop differential ghost imaging for optical phased arrays; orders-of-magnitude gains."></a>
+  <a href="https://github.com/Hanyuyuan6/STSF-TPLS"><img src="assets/card-stsf-tpls.svg" width="49%" alt="STSF-TPLS (arXiv 2026, PyTorch): segmentation directly from single-pixel measurements; near-constant accuracy down to 0.78% sampling."></a>
+  <a href="https://github.com/Hanyuyuan6/remote-gpu-trainer"><img src="assets/card-remote-gpu-trainer.svg" width="49%" alt="remote-gpu-trainer (60+ stars, Python): agent skill for Claude Code and Codex that runs, verifies and delivers GPU experiments."></a>
+  <a href="https://github.com/Hanyuyuan6/SHSI"><img src="assets/card-shsi.svg" width="49%" alt="SHSI (Optics Express 2025, MATLAB): Hadamard patterns with tunable sparsity; noise-robust imaging through scattering, low memory."></a>
+  <a href="https://github.com/Hanyuyuan6/LDGI"><img src="assets/card-ldgi.svg" width="49%" alt="LDGI (Optics Communications 2025, MATLAB): loop differential ghost imaging for optical phased arrays; orders-of-magnitude gains."></a>
 </p>
 
 <details>
