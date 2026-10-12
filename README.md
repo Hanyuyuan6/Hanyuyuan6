@@ -8,10 +8,10 @@ I build research code for learning from optical measurements. My work connects m
 
 | Selected research | Code | What it does |
 |---|---|---|
-| [The Lift Spectrum — preprint](https://arxiv.org/abs/2607.22077) | [STSF-TPLS](https://github.com/Hanyuyuan6/STSF-TPLS) | Our image-free segmentation is more robust to measurement noise than the tested reconstruct-then-segment baselines when models are trained on clean data. |
+| [The Lift Spectrum — preprint](https://arxiv.org/abs/2607.22077) | [STSF-TPLS](https://github.com/Hanyuyuan6/STSF-TPLS) | Segmenting directly from single-pixel measurements beats the strongest clean-trained reconstruct-then-segment baseline by 3.1–21.7 foreground-mIoU points at 20 dB noise. |
 | [Sparse Hadamard imaging — Optics Express](https://doi.org/10.1364/OE.576533) | [SHSI](https://github.com/Hanyuyuan6/SHSI) | Tunable-sparsity measurements and noise-aware reconstruction. |
-| [Loop differential ghost imaging — Optics Communications](https://doi.org/10.1016/j.optcom.2025.131589) | [LDGI](https://github.com/Hanyuyuan6/LDGI) | A loop differential ghost-imaging algorithm for line-pattern illumination from one-dimensional optical phased arrays. |
+| [Loop differential ghost imaging — Optics Communications](https://doi.org/10.1016/j.optcom.2025.131589) | [LDGI](https://github.com/Hanyuyuan6/LDGI) | Line patterns from one-dimensional optical phased arrays break the noise symmetry that traditional ghost-imaging denoising relies on; loop differential ghost imaging overcomes this. |
 
-Additional code: [Learning-based SPI comparisons](https://github.com/Hanyuyuan6/Comparison-of-SPI-DLs) · [Remote GPU workflow](https://github.com/Hanyuyuan6/remote-gpu-trainer)
+Additional code: [Learning-based SPI comparisons](https://github.com/Hanyuyuan6/Comparison-of-SPI-DLs) · [remote-gpu-trainer](https://github.com/Hanyuyuan6/remote-gpu-trainer), an open-source agent skill for reproducible remote-GPU deep-learning experiments
 
 Research collaborations and internship discussions: hanyuyuan6@gmail.com
