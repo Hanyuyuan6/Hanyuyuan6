@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://hanyuyuan6.github.io/"><img src="assets/hero.svg" width="100%" alt="Yuyuan Han. Teaching machines to see from raw measurements, not images. PhD student, Xi'an Jiaotong University; visiting PhD student, Politecnico di Milano."></a>
+  <a href="https://hanyuyuan6.github.io/"><img src="assets/hero.svg" width="100%" alt="Yuyuan Han. Teaching machines to see from raw measurements, not images. PhD student, Xi'an Jiaotong University."></a>
   <br>
   <sub>The trace is my portrait as a single-pixel camera would record it: 192 Walsh–Hadamard measurements, drawn to scale.</sub>
 </p>

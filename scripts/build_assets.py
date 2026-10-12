@@ -55,7 +55,7 @@ C = {"bg0": "#0b0a10", "bg1": "#1a1426", "border": "#2e2540", "ink": "#f3efff", 
 NAME = "Yuyuan Han"
 EYEBROW = "Single-pixel imaging · Image-free sensing"           # set in capitals, 41 characters
 LINE = "Teaching machines to see from raw measurements, not images."
-AFFILIATIONS = ("PhD student, Xi’an Jiaotong University", "Visiting PhD student, Politecnico di Milano")
+AFFILIATIONS = ("PhD student, Xi’an Jiaotong University",)  # the identity line names the PhD only (2026-10-12)
 STRESS_LINES = (  # any positioning line of up to nine words must fit both banners
     "Teaching machines to see with a single pixel.",
     "Perception from single-pixel measurements, without ever forming images.",
@@ -393,10 +393,10 @@ def best_breaks(face, text, size, max_width, lines, tracking=0.0):
 W, H, M = 1280, 340, 64         # canvas and side margins
 EYEBROW_SIZE, EYEBROW_TRACK = 17.5, 2.1    # ~10 px at a 740 px README column
 NAME_SIZE = 72
-AFF_SIZE, AFF_LEAD = 21, 30    # ~12 px at 740
+AFF_SIZE, AFF_LEAD = 22, 30    # ~13 px at 740
 CAP = 0.714                     # Noto Sans cap height / em
 HERO_SAMPLES = 192
-HERO_COMPACT = (600, 110)       # at or below 600 px wide (phones) only the name, larger, sits over the trace
+HERO_COMPACT = (600, 100, 40)   # at or below 600 px wide (phones): name and affiliation, larger, over the trace
 # timeline (s): the trace is recorded, the pixel lands on the last sample, then its light breathes
 HERO_DRAW = (0.25, 2.5)         # (delay, duration)
 HERO_LAND = 0.4                 # the pixel fades in as the sweep ends
@@ -404,7 +404,8 @@ HERO_BREATH = 6.0               # one slow breath: the halo swells and fades, th
 
 
 def _hero_title(line):
-    return f"{NAME}. {line} {AFFILIATIONS[0]}; {AFFILIATIONS[1][0].lower()}{AFFILIATIONS[1][1:]}."
+    rest = "".join(f"; {a[0].lower()}{a[1:]}" for a in AFFILIATIONS[1:])
+    return f"{NAME}. {line} {AFFILIATIONS[0]}{rest}."
 
 
 def hero_horizon(faces, line=LINE, eyebrow=EYEBROW, samples=HERO_SAMPLES):
@@ -429,12 +430,15 @@ def hero_horizon(faces, line=LINE, eyebrow=EYEBROW, samples=HERO_SAMPLES):
     yl = yn + 47                                # name descenders to the line's ascenders: about 8 px
     for i, row in enumerate(rows):
         cv.text(regular, row, M, yl + i * lead, size, C["ink"], tracking=-0.005 * size)
-    for row, y in zip(AFFILIATIONS, (yn - AFF_LEAD, yn)):   # last baseline shared with the name
-        cv.text(regular, row, W - M, y, AFF_SIZE, C["muted"], align="right")
+    for i, row in enumerate(AFFILIATIONS):       # right-aligned; the last line shares the name's baseline
+        cv.text(regular, row, W - M, yn - (len(AFFILIATIONS) - 1 - i) * AFF_LEAD, AFF_SIZE, C["muted"], align="right")
     # compact view: on a phone the banner is ~360 px wide and its small type would render at ~5 px, so the
-    # name alone, larger, stands over the trace (cap top at 74: centred in the band above the trace)
-    big = HERO_COMPACT[1]
-    cv.text(bold, NAME, M, round(74 + CAP * big), big, C["ink"], tracking=-0.02 * big, view="compact")
+    # name and the affiliation, larger, stand over the trace as one left-aligned lockup
+    _, big, small = HERO_COMPACT
+    yb = 124                                     # name baseline: the affiliation's descenders end 26 px above the trace
+    cv.text(bold, NAME, M, yb, big, C["ink"], tracking=-0.02 * big, view="compact")
+    for i, row in enumerate(AFFILIATIONS):
+        cv.text(regular, row, M, yb + 63 + i * round(small * 1.3), small, C["muted"], view="compact")
     # the trace: peak = 1.0, the deepest trough (-0.57) keeps the 24 px outer margin
     text_bottom = max(b[3] for k, _, b in cv.boxes if k == "text")
     amp, zero = 56.0, 280.0
