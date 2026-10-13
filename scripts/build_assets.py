@@ -54,7 +54,7 @@ C = {"bg0": "#0b0a10", "bg1": "#1a1426", "border": "#2e2540", "ink": "#f3efff", 
 
 NAME = "Yuyuan Han"
 EYEBROW = "Single-pixel imaging · Image-free sensing"           # set in capitals, 41 characters
-LINE = "Teaching machines to see from raw measurements, not images."
+LINE = "Robust perception from optical measurements, with or without images."
 AFFILIATIONS = ("PhD student, Xi’an Jiaotong University",)  # the identity line names the PhD only (2026-10-12)
 STRESS_LINES = (  # any positioning line of up to nine words must fit both banners
     "Teaching machines to see with a single pixel.",
@@ -64,13 +64,13 @@ STRESS_LINES = (  # any positioning line of up to nine words must fit both banne
 )
 CARDS = [  # description line breaks are set by hand (sense first), then checked to fit
     {"slug": "stsf-tpls", "kind": "Paper + code", "name": "STSF-TPLS", "venue": "arXiv 2026", "language": "PyTorch",
-     "text": ("Segmentation directly from single-pixel measurements:", "near-constant accuracy down to 0.78% sampling.")},
+     "text": ("Segments scenes directly from single-pixel data;", "beats clean-trained reconstruct-then-segment at 20 dB.")},
     {"slug": "remote-gpu-trainer", "kind": "Open-source tool", "name": "remote-gpu-trainer", "venue": "60+ stars",
      "language": "Python", "text": ("Agent skill for Claude Code and Codex that", "runs, verifies and delivers GPU experiments.")},
     {"slug": "shsi", "kind": "Paper + code", "name": "SHSI", "venue": "Optics Express 2025", "language": "MATLAB",
      "text": ("Hadamard patterns with tunable sparsity:", "noise-robust imaging through scattering, low memory.")},
     {"slug": "ldgi", "kind": "Paper + code", "name": "LDGI", "venue": "Optics Communications 2025", "language": "MATLAB",
-     "text": ("Loop differential ghost imaging for", "optical phased arrays: orders-of-magnitude gains.")},
+     "text": ("Ghost imaging for 1D optical phased arrays:", "corrects noise asymmetry; orders-of-magnitude gains.")},
 ]
 BADGES = [  # README links, left to right; the website, the primary link, carries the gold pixel
     {"slug": "website", "label": "Website", "mark": "pixel"},
