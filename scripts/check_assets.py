@@ -11,8 +11,11 @@ Needs Pillow and librsvg's rsvg-convert. Never imports scripts/build_assets.py: 
    <foreignObject>, event-handler attributes, javascript:); SMIL (<animate*>, <set>) is forbidden.
 2. Contrast: every text fill against the lighter background stop (WCAG 2.x, >= 4.5:1).
    Data: data/portrait-signal.json must hold the pinned reference values (REFERENCE_SHA256; change the
-   pin only with a deliberate new measurement). Each trace's knots must be an exact linear image of the
-   first N values (uniform x, residual <= 0.01 px), and the file's description must state that N.
+   pin only with a deliberate new measurement). Each card must have exactly one measured trace, whose
+   24 knots are an exact linear image of its pinned, nonoverlapping portrait interval (uniform x,
+   residual <= 0.01 px). The four intervals are independently scaled decorative identity motifs.
+   The hero is a synthetic concept, checked separately for its disclaimer, brain contour, seven slices,
+   cortical grooves and 72 fixed points. A conceptual light trace must never claim measured amplitudes.
 3. Overlap, on renders (librsvg, 4x): every text run and the graphics (every non-text shape) are
    rendered alone; text keeps a minimum distance from the graphics, text runs never overlap, and
    nothing enters the outer margin.
@@ -26,9 +29,9 @@ Needs Pillow and librsvg's rsvg-convert. Never imports scripts/build_assets.py: 
    element that is invisible when static, from 0 back to 0, with a period of at least 4 s.
 6. Motion, rendered: frames are computed from the file's own CSS (an evaluator of that subset) and
    rendered. The settled frame must equal the static render; traces only grow and fades only rise; the
-   loop at its brightest keeps the text clearance and the outer margin.
+   every loop at its own brightest keeps the text clearance and the outer margin.
 7. Compact view: rebuilt as its own document (as a narrow image shows it), it must pass 1-3, keep the
-   data trace, and replace every full-layout text run.
+   data trace or brain illustration, and replace every full-layout text run.
 
 Origin: the identity checker (design/claude/scripts/check_identity.py), whose blanket ban on
 @keyframes and animation is replaced by the stricter motion policy in 5-6; every other check is kept.
@@ -59,6 +62,8 @@ EXPECT = {  # file: (viewBox size, min text-to-graphics clearance in px, outer m
     "card-stsf-tpls.svg": ((400, 150), 8, 14), "card-remote-gpu-trainer.svg": ((400, 150), 8, 14),
     "card-shsi.svg": ((400, 150), 8, 14), "card-ldgi.svg": ((400, 150), 8, 14),
 }
+CARD_START = {'card-stsf-tpls.svg': 0, 'card-remote-gpu-trainer.svg': 24,
+              'card-shsi.svg': 48, 'card-ldgi.svg': 72}
 BADGE = re.compile(r"badge-[a-z]+\.svg")  # badges: height 28, width 60-260, clearance 5, margin 6
 SCALE = 4
 RSVG = shutil.which("rsvg-convert") or ("/opt/homebrew/bin/rsvg-convert" if Path("/opt/homebrew/bin/rsvg-convert").exists() else None)
@@ -386,12 +391,13 @@ def check_motion(path: Path, text: str, root: ET.Element, texts, tmp: Path, repo
                     break
                 prev[prop] = x
             t += 0.02
-    peak = None  # the loop at its brightest, for the clearance and margin checks
+    peaks = []  # every loop at its brightest, not only the final declared loop
     for cls, spec in mo.loops().items():
         steps = mo.frames[spec["name"]]
         best = max(steps, key=lambda s: float(s[1].get("opacity", 0)))
         peak = spec["delay"] + best[0] * spec["duration"] + 3 * spec["duration"]
-    return fails, (mo, peak)
+        peaks.append((cls, peak))
+    return fails, (mo, peaks)
 
 
 def compact_view(text: str, display):
@@ -423,6 +429,52 @@ def compact_view(text: str, display):
 
 
 # ---------------------------------------------------------------------------------- checks
+def check_concept(root: ET.Element, report: dict):
+    """Inspect the shipped concept's population, labels and visibility without the generator."""
+    fails = []
+    desc = (root.findtext(NS + 'desc') or '').lower()
+    for phrase in ('synthetic concept illustration', 'schematic brain', 'not measured data'):
+        if phrase not in desc:
+            fails.append(f'brain illustration description is missing {phrase!r}')
+    if 'first ' in desc or 'drawn to linear scale' in desc:
+        fails.append('a synthetic brain illustration claims measured signal samples')
+    groups = [e for e in root.iter(NS + 'g') if e.get('id') == 'hero-concept']
+    if len(groups) != 1 or groups[0].get('data-illustration') != 'synthetic-optical-brain':
+        fails.append('expected one explicitly synthetic brain concept group')
+        return fails
+    parent = {child: el for el in root.iter() for child in el}
+
+    def visible(el):
+        opacity = 1.0
+        while el is not None:
+            opacity *= float(el.get('opacity', '1'))
+            if el.get('display') == 'none':
+                return False
+            el = parent.get(el)
+        return opacity >= .1
+
+    population = {}
+    for cls, tag, expected in (('brain-outline', 'path', 1), ('slice', 'path', 7),
+                               ('cortical-groove', 'path', 8), ('sample', 'circle', 60),
+                               ('constellation', 'circle', 12), ('trace', 'path', 1),
+                               ('optical-input', 'path', 1)):
+        elements = [e for e in groups[0].iter(NS + tag) if f'hero-{cls}' in (e.get('class') or '').split()]
+        population[cls] = len(elements)
+        if len(elements) != expected:
+            fails.append(f'brain concept {cls}: expected {expected}, found {len(elements)}')
+        for el in elements:
+            if not visible(el):
+                fails.append(f'brain concept {cls} is invisible in the static illustration')
+            if tag == 'circle' and float(el.get('r', '0')) < .5:
+                fails.append(f'brain concept {cls} has no visible radius')
+            if tag == 'path' and len(re.findall(r'-?\d+(?:\.\d+)?', el.get('d', ''))) < 12:
+                fails.append(f'brain concept {cls} has incomplete geometry')
+        if cls == 'slice' and {e.get('data-slice') for e in elements} != {str(i) for i in range(1, 8)}:
+            fails.append('brain concept must contain slices 1 through 7 exactly once')
+    report['concept'] = population
+    return fails
+
+
 def check(path: Path, tmp: Path):
     """The full (static) view and its motion, then the compact view if the file has one."""
     data = path.read_bytes()
@@ -441,7 +493,7 @@ def check(path: Path, tmp: Path):
                 fails.append("compact view keeps some full-layout text (every full text run must swap)")
             cfails, creport = check_text(path, compact.encode("utf-8"), tmp, view="compact")
             fails += [f"compact view: {f}" for f in cfails]
-            report["compact"] = {k: v for k, v in creport.items() if k in ("texts", "min_contrast", "samples", "clearance (static)")}
+            report["compact"] = {k: v for k, v in creport.items() if k in ("texts", "min_contrast", "samples", "concept", "clearance (static)")}
             if creport.get("samples") != report.get("samples"):
                 fails.append("compact view drops the data trace")
     return fails, report
@@ -488,22 +540,37 @@ def check_text(path: Path, data: bytes, tmp: Path, view: str = "full"):
         if ratio < 4.5:
             fails.append(f"text fill {el.get('fill')} contrast {ratio:.2f}:1")
     report["min_contrast"] = round(min((contrast(el.get("fill"), lighter) for el in texts), default=99), 2)
-    # data fidelity: the trace's knots must be an exact linear image of the first N real samples
-    for el in body[1:]:
-        if el.tag == NS + "path" and el.get("fill") == "none":
+    # Keep conceptual brain graphics separate from the cards' measured portrait data.
+    traces = [el for el in body[1:] if el.tag == NS + 'path' and f'{path.stem}-trace' in (el.get('class') or '').split()]
+    if path.name == 'hero.svg':
+        fails += check_concept(root, report)
+    elif not is_badge and len(traces) != 1:
+        fails.append(f'a research card must carry exactly one measured trace, found {len(traces)}')
+    # data fidelity: the card trace's knots must remain an exact linear image of 24 real samples
+    for el in traces if path.name != 'hero.svg' else []:
+        if el.get('fill') != 'none':
+            fails.append('the measured trace is not an unfilled path')
+        else:
             nums = [float(v) for v in re.findall(r"-?\d+(?:\.\d+)?", el.get("d"))]
             knots = [(nums[0], nums[1])] + [(nums[i + 4], nums[i + 5]) for i in range(2, len(nums), 6)]
-            values = SIGNAL[:len(knots)]
+            start = CARD_START.get(path.name, 0)
+            values = SIGNAL[start:start + len(knots)]
             ys = [y for _, y in knots]
             mv, my = sum(values) / len(values), sum(ys) / len(ys)
             slope = sum((v - mv) * (y - my) for v, y in zip(values, ys)) / sum((v - mv) ** 2 for v in values)
             worst = max(abs(my + slope * (v - mv) - y) for v, y in zip(values, ys))
             steps = [b[0] - a[0] for a, b in zip(knots, knots[1:])]
             report["samples"] = len(knots)
+            report['sample_interval'] = [start + 1, start + len(knots)]
+            if len(knots) != 24:
+                fails.append(f'a card must display 24 measured samples, found {len(knots)}')
             if slope >= 0 or worst > 0.01 or max(steps) - min(steps) > 0.02:
-                fails.append(f"trace is not the first {len(knots)} samples at linear scale (residual {worst:.3f} px)")
-            if f"first {len(knots)} " not in text:
-                fails.append(f"description does not state the {len(knots)} samples drawn")
+                fails.append(f"trace is not portrait samples {start + 1} through {start + len(knots)} at linear scale (residual {worst:.3f} px)")
+            if f"samples {start + 1} through {start + len(knots)} " not in text:
+                fails.append(f"description does not state the {len(knots)} portrait samples drawn")
+            for phrase in ('Portrait-derived decorative motif', 'independently linearly scaled', 'not project measurements or performance'):
+                if phrase not in text:
+                    fails.append(f'card sparkline description is missing {phrase!r}')
     if is_badge and "samples" in report:
         fails.append("a badge carries a data trace")
     if not RSVG:
@@ -526,8 +593,9 @@ def check_text(path: Path, data: bytes, tmp: Path, view: str = "full"):
         return ET.tostring(clone, encoding="unicode")
 
     frames = [("static", graphics_doc(text))]
-    if motion and motion[1] is not None:
-        frames.append(("loop peak", graphics_doc(text, motion[1])))
+    if motion:
+        for cls, peak in motion[1]:
+            frames.append((f'loop peak {cls}', graphics_doc(text, peak)))
     boxes = []
     for i, el in enumerate(texts):  # ElementTree does not re-parent on append, so root stays whole
         img = render(alone(root, el), tmp / f"{path.stem}-{view}-text{i}.png")
@@ -568,7 +636,7 @@ def check_all(folder: Path = ASSETS) -> int:
     with tempfile.TemporaryDirectory() as t:
         for name in names:
             fails, report = check(folder / name, Path(t))
-            summary = {k: v for k, v in report.items() if k in ("bytes", "min_contrast", "samples", "motion", "compact")}
+            summary = {k: v for k, v in report.items() if k in ("bytes", "min_contrast", "samples", "sample_interval", "concept", "motion", "compact")}
             print(f"{'FAIL' if fails else 'ok  '} {name}: {summary}" + "".join(f"\n     - {f}" for f in fails))
             failed |= bool(fails)
     return 1 if failed else 0
@@ -591,7 +659,7 @@ def _compact_up(s):  # lift the compact view's first text run onto the sparkline
 
 
 FAULTS = [  # (what goes wrong, file, mutation); each must make check() fail
-    ("trace ends partly drawn", "hero.svg", _sub(r"stroke-dasharray:none", "stroke-dasharray:1000 1000")),
+    ("trace ends partly drawn", "hero.svg", _sub(r"stroke-dasharray:none", "stroke-dasharray:10 1000")),
     ("reduced motion skips the halo", "hero.svg", _sub(r"\{\.hero-halo,", "{")),
     ("loop on a visible element", "hero.svg", _sub(r'(<circle class="hero-halo"[^>]*?)opacity="0"', r'\1opacity="1"')),
     ("text run animated", "hero.svg", lambda s: _sub(r'<path class="hero-full"', '<path class="hero-full hero-x"')(s)
@@ -605,11 +673,16 @@ FAULTS = [  # (what goes wrong, file, mutation); each must make check() fail
     ("compact text collides with the sparkline", "card-remote-gpu-trainer.svg", _compact_up),
     ("compact view keeps a full text run", "card-ldgi.svg", _sub(r'<path class="card-ldgi-full"', "<path")),
     ("width rule does more than swap", "card-ldgi.svg", _sub(r"\.card-ldgi-compact\{display:inline\}", ".card-ldgi-compact{display:inline;opacity:.5}")),
-    ("data: one knot moved 0.5 px", "hero.svg", lambda s: re.sub(r'(<path class="hero-trace" d="M[\d.]+ [\d.]+C[\d.]+ [\d.]+ [\d.]+ [\d.]+ [\d.]+ )([\d.]+)',
+    ("data: one knot moved 0.5 px", "card-shsi.svg", lambda s: re.sub(r'(<path class="card-shsi-trace" d="M[\d.]+ [\d.]+C[\d.]+ [\d.]+ [\d.]+ [\d.]+ [\d.]+ )([\d.]+)',
                                                                   lambda m: m.group(1) + f"{float(m.group(2)) + 0.5:.2f}", s, count=1)),
     ("contrast: text fill too dark", "card-shsi.svg", _sub(r'fill="#a9a1bd"', 'fill="#4a4258"')),
     ("badge label too dark", "badge-orcid.svg", _sub(r'fill="#f3efff"', 'fill="#3a3248"')),
     ("external reference", "badge-email.svg", _sub(r"</svg>", '<image href="https://example.com/x.png"/></svg>')),
+    ("brain disclaimer removed", "hero.svg", _sub(r'Synthetic concept illustration:', 'Clinical reconstruction:')),
+    ("brain outline hidden", "hero.svg", _sub(r'(<path class="hero-brain-outline")', r'\1 opacity="0"')),
+    ("tomography slice omitted", "hero.svg", _sub(r'<path class="hero-slice" data-slice="4"[^>]*/>', '')),
+    ("constellation point omitted", "hero.svg", _sub(r'<circle class="hero-constellation"[^>]*/>', '')),
+    ("early loop crosses the margin", "hero.svg", _sub(r'(<g class="hero-photon-0" opacity="0">)<circle cx="[\d.]+"', r'\1<circle cx="2"')),
 ]
 
 

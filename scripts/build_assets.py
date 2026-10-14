@@ -1,18 +1,21 @@
 #!/usr/bin/env python3
 """Build the profile README's banner, project cards and link badges.
 
-The only graphic is one signal: data/portrait-signal.json, the first 1024 two-dimensional
-Walsh-Hadamard measurements (sequency order, DC term omitted, normalised to [-1, 1]) that a
-single-pixel camera would record of the public 64x64 portrait on hanyuyuan6.github.io.
-Traces pass through real samples at their real, linear amplitudes. Between samples they
-follow a shape-preserving (monotone) cubic, so every peak and trough drawn is a measured
-value and nothing is smoothed away. The gold square marks the newest sample: the pixel.
+The banner is a synthetic concept illustration: sparse optical samples and one restrained
+light trace lead into a hand-drawn brain volume with seven schematic tomography slices.
+It is not a measurement, reconstruction, MRI, EEG recording or clinical result.
+
+The card sparklines use four nonoverlapping 24-sample intervals of data/portrait-signal.json:
+computed two-dimensional Walsh-Hadamard measurements of the author's public 64x64 portrait.
+Each interval is independently linearly scaled and uses shape-preserving interpolation;
+these are decorative identity motifs, not project measurements or performance. The gold
+square marks the final scalar sample in each interval.
 
 Motion is CSS @keyframes inside each SVG: GitHub shows README images in <img>, where CSS
 animation runs and scripts never do. Each file's static content is the finished frame, so
 renderers without animation, and readers who ask for reduced motion, see the complete
-image. The banner's trace draws on left to right, sample by sample; the pixel lands on the
-last sample and its light breathes slowly; the card sparklines follow. Narrow images (two
+image. The banner's contour and slices remain fixed; a sparse sequence of small lights
+passes along its trace without moving the anatomy. The card sparklines follow. Narrow images (two
 cards across a phone, the banner on a phone) swap to a compact view by a width media query.
 
 Text is shaped with HarfBuzz and outlined from Noto Sans (SIL OFL 1.1), so the SVGs embed
@@ -22,6 +25,12 @@ files render in "markdown" mode, which splits a <picture> wrapped in a link.
     pip install fonttools==4.66.1 uharfbuzz==0.56.3
     python scripts/build_assets.py --fonts ../hanyuyuan6.github.io/fonts
 
+Display copy comes from data/profile-display.json, a generated subset of the website's
+public profile.json. Pass --profile ../hanyuyuan6.github.io/profile.json to refresh that
+subset and README together; the snapshot's hash covers only its public fields. No local
+source path or unpublished profile field is copied. Without --profile, the same shipped
+snapshot reproduces the SVGs offline.
+
 Every build re-checks its own geometry (no text touches the signal or other text, all ink
 inside the margins), contrast, file size, self-containment and motion (each animation ends
 on the static frame, reduced motion stops all of it), and stress-tests the banner with
@@ -30,6 +39,7 @@ longer positioning lines.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import itertools
 import json
 import math
@@ -46,31 +56,27 @@ from fontTools.ttLib import TTFont
 ROOT = Path(__file__).resolve().parent.parent
 ASSETS = ROOT / "assets"
 SIGNAL = json.loads((ROOT / "data" / "portrait-signal.json").read_text(encoding="utf-8"))["values"]
+DISPLAY = ROOT / "data" / "profile-display.json"
 
-# Brand palette: purple, gold and black. Rule: type is neutral (ink, muted); colour belongs to the
-# data (the trace runs deep -> light purple, earliest to latest sample); gold is reserved for the pixel.
+# Brand palette: purple, gold and black. Type stays neutral. On the measured card traces,
+# purple runs from earliest to latest sample; the gold square marks the latest sample.
 C = {"bg0": "#0b0a10", "bg1": "#1a1426", "border": "#2e2540", "ink": "#f3efff", "muted": "#a9a1bd",
      "trace": "#8b5cf6", "trace_to": "#c4b5fd", "pixel": "#f5c33b"}
 
-NAME = "Yuyuan Han"
-EYEBROW = "Single-pixel imaging · Image-free sensing"           # set in capitals, 41 characters
-LINE = "Robust perception from optical measurements, with or without images."
-AFFILIATIONS = ("PhD student, Xi’an Jiaotong University",)  # the identity line names the PhD only (2026-10-12)
+NAME = EYEBROW = LINE = ""  # all display copy is loaded from the generated public snapshot
+AFFILIATIONS = ()
 STRESS_LINES = (  # any positioning line of up to nine words must fit both banners
     "Teaching machines to see with a single pixel.",
     "Perception from single-pixel measurements, without ever forming images.",
     "Machine perception learned directly from compressive single-pixel optical measurements.",
     "Understanding scenes through compressive measurement-domain perception without reconstructing images.",
 )
-CARDS = [  # description line breaks are set by hand (sense first), then checked to fit
-    {"slug": "stsf-tpls", "kind": "Paper + code", "name": "STSF-TPLS", "venue": "arXiv 2026", "language": "PyTorch",
-     "text": ("Segments scenes directly from single-pixel data;", "beats clean-trained reconstruct-then-segment at 20 dB.")},
-    {"slug": "remote-gpu-trainer", "kind": "Open-source tool", "name": "remote-gpu-trainer", "venue": "60+ stars",
-     "language": "Python", "text": ("Agent skill for Claude Code and Codex that", "runs, verifies and delivers GPU experiments.")},
-    {"slug": "shsi", "kind": "Paper + code", "name": "SHSI", "venue": "Optics Express 2025", "language": "MATLAB",
-     "text": ("Hadamard patterns with tunable sparsity:", "noise-robust imaging through scattering, low memory.")},
-    {"slug": "ldgi", "kind": "Paper + code", "name": "LDGI", "venue": "Optics Communications 2025", "language": "MATLAB",
-     "text": ("Ghost imaging for 1D optical phased arrays:", "corrects noise asymmetry; orders-of-magnitude gains.")},
+CARDS = [  # stable project titles; descriptions and publication venues come from the fact source
+    {"slug": "stsf-tpls", "kind": "Paper + code", "name": "STSF-TPLS", "language": "PyTorch"},
+    {"slug": "remote-gpu-trainer", "kind": "Open-source tool", "name": "remote-gpu-trainer", "venue": "Agent skill",
+     "language": "Python"},
+    {"slug": "shsi", "kind": "Paper + code", "name": "SHSI", "language": "MATLAB"},
+    {"slug": "ldgi", "kind": "Paper + code", "name": "LDGI", "language": "MATLAB"},
 ]
 BADGES = [  # README links, left to right; the website, the primary link, carries the gold pixel
     {"slug": "website", "label": "Website", "mark": "pixel"},
@@ -223,8 +229,8 @@ DRAW_DONE = 0.999                     # fraction of the draw at which the last s
 
 
 class Motion:
-    """CSS animation for one SVG. Every one-shot animation fills both ways and ends on the element's
-    static state; the only loop is the halo's breath, on an element that is invisible when static."""
+    """CSS animation for one SVG. One-shot animations fill both ways and end on the element's static
+    state; loops only fade light that is invisible when static."""
 
     def __init__(self, uid):
         self.uid = uid
@@ -389,18 +395,203 @@ def best_breaks(face, text, size, max_width, lines, tracking=0.0):
     return best[1] if best else None
 
 
+def public_display(profile: dict) -> dict:
+    """Copy only public display fields; the website's profile.json is the sole authoring source."""
+    narrative = profile['narrative']
+    long_term = next(s for s in narrative['bio'].split('. ') if s.startswith('My long-term aim'))
+    publications = {p['id']: p for p in profile['publications']}
+    return {
+        'person': {key: profile['person'][key] for key in ('name', 'position', 'institution')},
+        'narrative': {**{key: narrative[key] for key in ('field', 'hero', 'short_bio', 'current_summary', 'welcome')},
+                      'long_term': long_term.rstrip('.') + '.'},
+        'projects': [{**{key: p[key] for key in ('id', 'summary', 'context', 'code_url')},
+                      'venue': publications[p['publication_id']]['venue'],
+                      'year': publications[p['publication_id']]['year']}
+                     for p in profile['projects'] if p['id'] in ('lift', 'shsi', 'loop')],
+        'tool': next({key: p[key] for key in ('name', 'description', 'url')}
+                     for p in profile['software'] if p['name'] == 'remote-gpu-trainer'),
+    }
+
+
+def use_display(data: dict):
+    global NAME, EYEBROW, LINE, AFFILIATIONS
+    NAME = data['person']['name']
+    EYEBROW, LINE = data['narrative']['field'], data['narrative']['hero']
+    AFFILIATIONS = (f"{data['person']['position']}, {data['person']['institution']}",)
+    projects = {p['id']: p for p in data['projects']}
+    for spec in CARDS:
+        if spec['slug'] == 'remote-gpu-trainer':
+            spec['summary'] = data['tool']['description']
+            spec['context'] = ''
+        else:
+            p = projects[{'stsf-tpls': 'lift', 'shsi': 'shsi', 'ldgi': 'loop'}[spec['slug']]]
+            spec['summary'], spec['context'] = p['summary'], p['context']
+            spec['venue'] = f"{p['venue']} {p['year']}"
+
+
+def sync_readme(data: dict):
+    """Retain every existing link and project title; replace only source-derived display text."""
+    path = ROOT / 'README.md'
+    text = path.read_text(encoding='utf-8')
+    text = re.sub(r'(<img src="assets/hero.svg"[^>]* alt=")[^"]*',
+                  lambda m: m.group(1) + escape(_hero_title(data['narrative']['hero']), {'"': '&quot;'}), text, count=1)
+    text = re.sub(r'<sub>.*?</sub>', '<sub>Concept illustration with synthetic optical signals and schematic brain slices.</sub>',
+                  text, count=1)
+    n = data['narrative']
+    biography = (n['short_bio'] + '\n\n'
+                 f"- **Now:** {n['current_summary']}\n"
+                 f"- **Long term:** {n['long_term'].removeprefix('My long-term aim is to ')}\n"
+                 f"- **Open to:** {n['welcome'].removeprefix('I am open to ')}")
+    start, end = text.index('\nI study '), text.index('\n\n### Featured work')
+    text = text[:start] + '\n' + biography + text[end:]
+    for spec in CARDS:
+        note = f" Context: {spec['context']}." if spec.get('context') else ''
+        alt = f"{spec['name']} ({spec['venue']}, {spec['language']}): {spec['summary']}{note}"
+        pattern = rf'(<img src="assets/card-{re.escape(spec["slug"])}.svg"[^>]* alt=")[^"]*'
+        text = re.sub(pattern, lambda m: m.group(1) + escape(alt, {'"': '&quot;'}), text, count=1)
+    path.write_text(text, encoding='utf-8', newline='\n')
+
+
 # --------------------------------------------------------------------------------- banner
 W, H, M = 1280, 340, 64         # canvas and side margins
-EYEBROW_SIZE, EYEBROW_TRACK = 17.5, 2.1    # ~10 px at a 740 px README column
-NAME_SIZE = 72
+EYEBROW_SIZE, EYEBROW_TRACK = 15.5, 1.6
+NAME_SIZE = 76
 AFF_SIZE, AFF_LEAD = 22, 30    # ~13 px at 740
 CAP = 0.714                     # Noto Sans cap height / em
-HERO_SAMPLES = 192
-HERO_COMPACT = (600, 100, 40)   # at or below 600 px wide (phones): name and affiliation, larger, over the trace
-# timeline (s): the trace is recorded, the pixel lands on the last sample, then its light breathes
-HERO_DRAW = (0.25, 2.5)         # (delay, duration)
-HERO_LAND = 0.4                 # the pixel fades in as the sweep ends
-HERO_BREATH = 6.0               # one slow breath: the halo swells and fades, then again
+HERO_COMPACT = (600, 100, 50)   # phone: readable identity lockup, the same complete brain volume
+HERO_DRAW = (0.25, 2.8)
+HERO_LAND = 0.35
+HERO_BREATH = 9.6
+
+# A drawn lateral brain outline, deliberately schematic. No anatomy dataset is used.
+# Seven cross-section curves and two offset contours suggest a volume; cortical grooves
+# identify the brain without the node-to-node links of a neural-network diagram.
+BRAIN_OUTLINE = ("M-131 -4C-144 -21 -132 -47 -114 -49C-113 -69 -92 -85 -71 -82"
+                 "C-58 -103 -30 -110 -8 -101C8 -113 34 -107 49 -94"
+                 "C74 -96 94 -79 99 -61C121 -55 133 -34 129 -13"
+                 "C144 1 141 24 125 36C128 56 110 71 92 72"
+                 "C84 91 57 98 37 87C17 95 -6 93 -22 85"
+                 "C-45 94 -69 85 -80 72C-107 71 -126 55 -124 36"
+                 "C-143 26 -144 7 -131 -4Z")
+BRAIN_GROOVES = (
+    "M-111 -27C-94 -38 -79 -32 -72 -15C-65 1 -69 16 -56 25",
+    "M-92 -57C-81 -47 -55 -56 -50 -38C-45 -21 -57 -9 -43 1C-31 9 -19 1 -10 12",
+    "M-54 -83C-37 -69 -47 -53 -28 -47C-11 -42 1 -49 9 -33",
+    "M-6 -88C-19 -68 8 -63 23 -67C42 -71 53 -57 49 -40",
+    "M60 -74C52 -55 67 -40 85 -40C103 -40 108 -21 97 -9",
+    "M-115 14C-96 3 -86 21 -91 35C-96 51 -75 60 -59 53C-39 45 -23 51 -21 71",
+    "M-38 23C-20 17 -18 33 -1 36C18 40 31 28 44 38C57 49 47 66 62 75",
+    "M7 -10C25 -20 29 -3 43 1C60 6 74 -2 79 14C86 34 109 24 120 15",
+)
+
+
+def brain_concept(cv: Canvas):
+    """Keep all conceptual graphics in a group, separate from outlined text and measured card traces."""
+    uid = cv.uid
+    cv.defs.extend((
+        f'<linearGradient id="{uid}-cortex" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b69ad6"/>'
+        '<stop offset=".68" stop-color="#8e6cad"/><stop offset="1" stop-color="#d8b779"/></linearGradient>',
+        f'<radialGradient id="{uid}-light"><stop stop-color="#e2bd6c" stop-opacity=".38"/>'
+        '<stop offset=".35" stop-color="#e2bd6c" stop-opacity=".13"/>'
+        '<stop offset="1" stop-color="#e2bd6c" stop-opacity="0"/></radialGradient>',
+        f'<clipPath id="{uid}-brain-clip"><path d="{BRAIN_OUTLINE}"/></clipPath>',
+    ))
+    out = [f'<g id="{uid}-concept" data-illustration="synthetic-optical-brain">']
+    # The source is a fabricated single-peaked arrival-time envelope, rather than an EEG-like oscillation.
+    arrival = []
+    for i in range(65):
+        t = i / 9
+        v = (t ** 2.2 * math.exp(-t)) / (2.2 ** 2.2 * math.exp(-2.2))
+        arrival.append(f'{"M" if i == 0 else "L"}{num(718 + i * 1.55)} {num(263 - v * 21)}')
+    out.append(f'<path class="{uid}-optical-input" d="{"".join(arrival)}" fill="none" '
+               'stroke="#9677b2" stroke-opacity=".48" stroke-width="1.3"/>')
+    # Two offset shell contours make the depth legible at thumbnail scale.
+    out.append('<g transform="translate(1028 156) scale(1.04)">')
+    for depth in (2, 1):
+        out.append(f'<path class="{uid}-depth" d="{BRAIN_OUTLINE}" '
+                   f'transform="translate({-depth * 15} {depth * 8})" fill="none" '
+                   f'stroke="#9677b2" stroke-opacity="{num(.13 + (2 - depth) * .07)}" stroke-width=".8"/>')
+    out.append(f'<path class="{uid}-brain-outline" d="{BRAIN_OUTLINE}" '
+               f'fill="#171121" fill-opacity=".75" stroke="url(#{uid}-cortex)" stroke-width="1.6"/>')
+    out.append(f'<g class="{uid}-slices" opacity="1" clip-path="url(#{uid}-brain-clip)">')
+    for i in range(7):
+        y = -79 + i * 26
+        d = (f'M-151 {y - 12}C-71 {y + 31} 42 {y + 30} 151 {y - 1}'
+             f'M-151 {y - 9}C-71 {y + 34} 42 {y + 33} 151 {y + 2}')
+        out.append(f'<path class="{uid}-slice" data-slice="{i + 1}" d="{d}" fill="none" '
+                   f'stroke="{"#cead78" if i == 3 else "#aa85c6"}" '
+                   f'stroke-opacity="{.46 if i == 3 else .22}" stroke-width="{1 if i == 3 else .65}"/>')
+    out.append('</g>')
+    for d in BRAIN_GROOVES:
+        out.append(f'<path class="{uid}-cortical-groove" d="{d}" fill="none" '
+                   'stroke="#b293c9" stroke-opacity=".50" stroke-width="1.0" stroke-linecap="round"/>')
+    # The cerebellum and a short brain stem complete the silhouette without an anatomical-data claim.
+    out.append(f'<path class="{uid}-cerebellum" d="M51 81C71 67 95 72 103 89C109 105 88 117 68 110C56 108 46 94 51 81Z" '
+               'fill="#191321" stroke="#9776ad" stroke-opacity=".55" stroke-width="1.0"/>')
+    for i in range(4):
+        y = 84 + i * 6
+        out.append(f'<path d="M56 {y}Q78 {y - 8} 99 {y + 1}" fill="none" stroke="#b192c6" stroke-opacity=".30" stroke-width=".7"/>')
+    out.append('<path d="M36 88C43 99 41 114 33 128L18 122C27 109 24 99 20 93" '
+               'fill="none" stroke="#b297c5" stroke-opacity=".52" stroke-width="1.2"/>')
+    # Samples are fixed in space. Their uneven density provides depth, without network edges.
+    out.append(f'<g class="{uid}-samples" opacity="1" clip-path="url(#{uid}-brain-clip)">')
+    for row in range(6):
+        for col in range(10):
+            x = -117 + col * 25 + math.sin(row * 1.5 + col * .7) * 4
+            y = -73 + row * 29 + math.cos(col * 1.3 + row) * 5
+            gold = (row * 10 + col) % 13 == 0
+            out.append(f'<circle class="{uid}-sample" cx="{num(x)}" cy="{num(y)}" '
+                       f'r="{1.65 if gold else 1.0}" fill="{"#e2bd6c" if gold else "#b397d0"}" '
+                       f'opacity="{.85 if gold else .46}"/>')
+    out.append('</g></g>')
+    outside = ((742, 102), (789, 76), (831, 115), (755, 169), (811, 181), (850, 69),
+               (735, 223), (784, 287), (846, 267), (1168, 71), (1204, 214), (1135, 294))
+    for i, (x, y) in enumerate(outside):
+        out.append(f'<circle class="{uid}-constellation" cx="{x}" cy="{y}" r="{1.8 if i % 3 else 2.5}" '
+                   f'fill="{"#d2af74" if i % 3 == 0 else "#a88ac0"}" opacity="{.55 if i % 3 else .75}"/>')
+    # G8: one fine Bézier trace. The constant base survives static/reduced-motion rendering.
+    segs = (((727, 258), (801, 270), (792, 91), (890, 94)),
+            ((890, 94), (987, 96), (1070, 222), (1181, 156)))
+    d = path_d(segs)
+    length = math.ceil(sum(bezier_length(*s) for s in segs))
+    out.append(f'<path d="{d}" fill="none" stroke="#8e709d" stroke-opacity=".25" stroke-width=".85"/>')
+    out.append(f'<path class="{uid}-trace" d="{d}" pathLength="{length}" fill="none" '
+               'stroke="#e2bd6c" stroke-opacity=".58" stroke-width="1.1" stroke-linecap="round"/>')
+    out.append(f'<circle class="{uid}-halo" cx="1181" cy="156" r="14" fill="url(#{uid}-light)" opacity="0"/>')
+    out.append(f'<circle class="{uid}-pixel" cx="1181" cy="156" r="2.2" fill="#e4c586" opacity="1"/>')
+    delay, duration = HERO_DRAW
+    loop_start = delay + duration + HERO_LAND
+    cv.motion.add('halo', [(0, {'opacity': 0}), (.83, {'opacity': .8}), (1, {'opacity': 0})],
+                  HERO_BREATH, loop_start, timing='ease-in-out', loop=True)
+    cv.static[f'{uid}-halo'] = {'opacity': 0.0}
+    cv.motion.add('trace', [(0, {'stroke-dashoffset': length + 1, 'stroke-dasharray': (length + 1, length + 1)}),
+                            (.999, {'stroke-dashoffset': 0, 'stroke-dasharray': (length + 1, length + 1)}),
+                            (1, {'stroke-dashoffset': 0, 'stroke-dasharray': 'none'})], duration, delay)
+    cv.static[f'{uid}-trace'] = {'path_length': length}
+    cv.motion.add('pixel', [(0, {'opacity': 0}), (1, {'opacity': 1})], HERO_LAND, delay + duration, timing='ease-in-out')
+    cv.static[f'{uid}-pixel'] = {'opacity': 1.0}
+    for key, start in (('slices', .2), ('samples', .45)):
+        cv.motion.add(key, [(0, {'opacity': 0}), (1, {'opacity': 1})], 1.8, start, timing='ease-in-out')
+        cv.static[f'{uid}-{key}'] = {'opacity': 1.0}
+    # An apparent travelling light uses small cross-fades, not CSS motion paths or scripts.
+    for i in range(12):
+        t = (i + 1) / 13
+        s = segs[0] if t < .5 else segs[1]
+        u = t * 2 if t < .5 else (t - .5) * 2
+        point = tuple((1 - u) ** 3 * s[0][a] + 3 * (1 - u) ** 2 * u * s[1][a]
+                      + 3 * (1 - u) * u ** 2 * s[2][a] + u ** 3 * s[3][a] for a in (0, 1))
+        cls = f'photon-{i}'
+        peak = .08 + i * .062
+        out.append(f'<g class="{uid}-{cls}" opacity="0"><circle cx="{num(point[0])}" cy="{num(point[1])}" '
+                   f'r="10" fill="url(#{uid}-light)"/><circle cx="{num(point[0])}" cy="{num(point[1])}" '
+                   'r="2.1" fill="#f0dca6"/></g>')
+        cv.motion.add(cls, [(0, {'opacity': 0}), (peak - .055, {'opacity': 0}),
+                            (peak, {'opacity': .95}), (peak + .055, {'opacity': 0}), (1, {'opacity': 0})],
+                      HERO_BREATH, loop_start, timing='ease-in-out', loop=True)
+        cv.static[f'{uid}-{cls}'] = {'opacity': 0.0}
+    out.append('</g>')
+    cv.parts.append(''.join(out))
+    cv.boxes.append(('signal', 'synthetic optical-signal brain volume', (711, 37, 1210, 297)))
 
 
 def _hero_title(line):
@@ -408,57 +599,39 @@ def _hero_title(line):
     return f"{NAME}. {line} {AFFILIATIONS[0]}{rest}."
 
 
-def hero_horizon(faces, line=LINE, eyebrow=EYEBROW, samples=HERO_SAMPLES):
-    """The banner: a masthead over one long trace that runs margin to margin."""
+def hero_horizon(faces, line=LINE, eyebrow=EYEBROW):
+    """An identity lockup beside a sparse, layered brain volume; content never depends on motion."""
     bold, regular = faces["bold"], faces["regular"]
     cv = Canvas(W, H, "hero", compact_below=HERO_COMPACT[0])
-    ye = round(56 + CAP * EYEBROW_SIZE)             # eyebrow cap top at 56: the top margin
-    yn = round(ye + 23 + CAP * NAME_SIZE)
+    ye, yn = 69, 146
     cv.text(bold, eyebrow.upper(), M, ye, EYEBROW_SIZE, C["muted"], tracking=EYEBROW_TRACK, features=CAPS)
     cv.text(bold, NAME, M, yn, NAME_SIZE, C["ink"], tracking=-0.02 * NAME_SIZE)
-    # positioning line: one line across the full measure, stepping down in size before wrapping
-    for size in (29, 28, 27, 26, 25, 24):
-        rows = best_breaks(regular, line, size, W - 2 * M, 1, -0.005 * size)
+    # Two lines preserve breathing room around the three-dimensional drawing.
+    for size in (27, 26, 25, 24, 23, 22, 21, 20):
+        rows = best_breaks(regular, line, size, 610, 2, -0.005 * size)
         if rows:
             break
     else:                                         # very long: two balanced lines
-        size = 26
-        rows = best_breaks(regular, line, size, W - 2 * M, 2, -0.005 * size)
-        if not rows:
-            raise SystemExit(f"positioning line does not fit the banner: {line!r}")
+        raise SystemExit(f"positioning line does not fit the banner: {line!r}")
     lead = round(size * 1.3)
-    yl = yn + 47                                # name descenders to the line's ascenders: about 8 px
+    yl = 204
     for i, row in enumerate(rows):
         cv.text(regular, row, M, yl + i * lead, size, C["ink"], tracking=-0.005 * size)
-    for i, row in enumerate(AFFILIATIONS):       # right-aligned; the last line shares the name's baseline
-        cv.text(regular, row, W - M, yn - (len(AFFILIATIONS) - 1 - i) * AFF_LEAD, AFF_SIZE, C["muted"], align="right")
+    for i, row in enumerate(AFFILIATIONS):
+        cv.text(regular, row, M, 291 + i * AFF_LEAD, AFF_SIZE, C["muted"])
     # compact view: on a phone the banner is ~360 px wide and its small type would render at ~5 px, so the
     # name and the affiliation, larger, stand over the trace as one left-aligned lockup
     _, big, small = HERO_COMPACT
-    yb = 124                                     # name baseline: the affiliation's descenders end 26 px above the trace
+    yb = 132
     cv.text(bold, NAME, M, yb, big, C["ink"], tracking=-0.02 * big, view="compact")
-    for i, row in enumerate(AFFILIATIONS):
-        cv.text(regular, row, M, yb + 63 + i * round(small * 1.3), small, C["muted"], view="compact")
-    # the trace: peak = 1.0, the deepest trough (-0.57) keeps the 24 px outer margin
-    text_bottom = max(b[3] for k, _, b in cv.boxes if k == "text")
-    amp, zero = 56.0, 280.0
-    if zero - amp < text_bottom + 28:            # long lines that wrapped: keep 28 px of air
-        zero = min(292.0, text_bottom + 28 + amp)
-        amp = min(amp, (H - 26 - zero) / -min(SIGNAL[:samples]), zero - text_bottom - 28)
-    head = 8
-    points = trace_points(SIGNAL[:samples], M, W - M - head / 2, zero, amp)
-    trace = cv.trace(points, 2.0, head=head, halo=24)
-    delay, duration = HERO_DRAW
-    cv.motion.add("halo", [(0, {"opacity": 0}), (0.5, {"opacity": 1}), (1, {"opacity": 0})],
-                  HERO_BREATH, delay + duration, timing="ease-in-out", loop=True)
-    cv.motion.draw("trace", trace, duration, delay)
-    cv.motion.add("pixel", [(0, {"opacity": 0}), (1, {"opacity": 1})], HERO_LAND, delay + duration - 0.05,
-                  timing="cubic-bezier(.2,0,0,1)")
-    desc = (f"The trace is his portrait as a single-pixel camera would record it: the first {samples} of 4,096 "
-            "two-dimensional Walsh-Hadamard measurements after the DC term, in sequency order, drawn to linear scale; "
-            "the gold square is the newest sample.")
-    cv.defs.append(gradient(cv.uid, M, W - M))
-    return document(cv, _hero_title(line), desc, 18, stroke=1.5), cv
+    identity = AFFILIATIONS[0].split(', ', 1)
+    for i, row in enumerate(identity):
+        cv.text(regular, row, M, 203 + i * 63, small if i == 0 else 46, C["muted"], view="compact")
+    brain_concept(cv)
+    desc = ("Synthetic concept illustration: sparse optical samples and a fine luminous trace lead into a "
+            "schematic brain volume with seven tomography slices. Inspired by time-domain diffuse optical "
+            "tomography for 3D brain imaging. The signals and anatomy are drawn, not measured data or a clinical reconstruction.")
+    return document(cv, _hero_title(line), desc, 8, stroke=1.5), cv
 
 
 # ----------------------------------------------------------------------------------- cards
@@ -474,11 +647,20 @@ def card(faces, spec, index=0):
     ks, yk = 11, 31                              # label cap top on the 23 px top margin
     cv.text(bold, spec["kind"].upper(), PAD, yk, ks, C["muted"], tracking=1.4, features=CAPS)
     cv.text(bold, spec["name"], PAD, 59.5, 22.5, C["ink"], tracking=-0.22)
-    for row, y in zip(spec["text"], (83.5, 102.5)):
-        if regular.width(row, 13.5) > CW - 2 * PAD:
-            raise SystemExit(f"{spec['slug']}: description line too long: {row!r}")
-        cv.text(regular, row, PAD, y, 13.5, C["muted"])
-    foot, fs = 127, 13                           # footer baseline 23 px above the bottom edge
+    summary = spec['summary']
+    rows, size = None, 13.5
+    for count in (2, 3):
+        for size in (13.5, 13, 12.5):
+            rows = best_breaks(regular, summary, size, CW - 2 * PAD, count)
+            if rows:
+                break
+        if rows:
+            break
+    if not rows:
+        raise SystemExit(f"{spec['slug']}: description does not fit: {summary!r}")
+    for i, row in enumerate(rows):
+        cv.text(regular, row, PAD, 81 + i * 16, size, C['muted'])
+    foot, fs = 132.5 if len(rows) == 3 else 127, 13
     cv.text(regular, spec["venue"], PAD, foot, fs, C["ink"])          # credibility first, in ink
     cv.text(regular, "·", cv.boxes[-1][2][2] + 6, foot, fs, C["muted"])
     cv.text(regular, spec["language"], cv.boxes[-1][2][2] + 6, foot, fs, C["muted"])  # equal ink gaps
@@ -492,15 +674,21 @@ def card(faces, spec, index=0):
     head = 4
     x1 = CW - PAD - head / 2
     zero = yk - CAP * ks / 2                     # the sparkline signs the card in its label row
-    points = trace_points(SIGNAL[:SPARK_SAMPLES], x1 - SPARK_W + head / 2, x1, zero, 9.0)
+    start = index * SPARK_SAMPLES
+    values = SIGNAL[start:start + SPARK_SAMPLES]
+    points = trace_points(values, x1 - SPARK_W + head / 2, x1, zero, 9.0 / max(abs(v) for v in values))
     trace = cv.trace(points, 1.25, head=head)
     first, stagger, duration = CARD_DRAW
     delay = first + stagger * index
     cv.motion.draw("trace", trace, duration, delay)
     cv.motion.add("pixel", [(0, {"opacity": 0}), (1, {"opacity": 1})], 0.3, delay + duration - 0.05,
                   timing="cubic-bezier(.2,0,0,1)")
-    title = f"{spec['name']} ({spec['venue']}, {spec['language']}): {' '.join(spec['text'])}"
-    desc = f"Sparkline: the first {SPARK_SAMPLES} single-pixel measurements of the author's portrait."
+    title = f"{spec['name']} ({spec['venue']}, {spec['language']}): {summary}"
+    desc = (f"Portrait-derived decorative motif: computed Walsh-Hadamard samples {start + 1} through "
+            f"{start + SPARK_SAMPLES} of the author's public portrait. Each interval is independently linearly "
+            "scaled; these are not project measurements or performance.")
+    if spec.get('context'):
+        desc += f" Research context: {spec['context']}."
     cv.defs.append(gradient(cv.uid, x1 - SPARK_W, x1 + head / 2))
     return document(cv, title, desc, 12), cv
 
@@ -647,11 +835,29 @@ def build(faces, line, eyebrow, out: Path | None):
 
 
 def main() -> None:
+    if DISPLAY.exists():
+        use_display(json.loads(DISPLAY.read_text(encoding='utf-8'))['profile'])
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--fonts", type=Path, required=True, help="folder with NotoSans-Regular/Bold.ttf")
     parser.add_argument("--line", default=LINE, help="positioning line (up to twelve words)")
     parser.add_argument("--eyebrow", default=EYEBROW, help="eyebrow, at most 50 characters (set in capitals)")
+    parser.add_argument('--profile', type=Path, help='refresh the public display snapshot and README from the website profile.json')
     args = parser.parse_args()
+    if not DISPLAY.exists() and not args.profile:
+        raise SystemExit('missing data/profile-display.json; pass --profile with the website fact source')
+    if args.profile:
+        data = public_display(json.loads(args.profile.read_text(encoding='utf-8')))
+        canonical = json.dumps(data, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode('utf-8')
+        snapshot = {'generated_from': 'Hanyuyuan6/hanyuyuan6.github.io:profile.json',
+                    'source_public_fields_sha256': hashlib.sha256(canonical).hexdigest(), 'profile': data}
+        DISPLAY.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
+        use_display(data)
+        # An explicit layout override still takes precedence over the refreshed display snapshot.
+        if args.line == parser.get_default('line'):
+            args.line = LINE
+        if args.eyebrow == parser.get_default('eyebrow'):
+            args.eyebrow = EYEBROW
+        sync_readme(data)
     if len(args.line.split()) > 12:
         raise SystemExit("the positioning line has more than twelve words")
     faces = {k: Face(args.fonts / f"NotoSans-{v}.ttf") for k, v in (("regular", "Regular"), ("bold", "Bold"))}
