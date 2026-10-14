@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://hanyuyuan6.github.io/"><img src="assets/hero-monolith.webp" width="100%" alt="Yuyuan Han. How optical measurements shape what machines can infer. PhD student, Xi'an Jiaotong University."></a>
+  <a href="https://hanyuyuan6.github.io/"><img src="assets/hero-monolith.webp" width="100%" alt="Yuyuan Han. Computational imaging & robust image-free sensing. PhD student, Xi'an Jiaotong University."></a>
 </p>
 
 <p align="center">
@@ -18,17 +18,18 @@ I study how optical measurements shape what machines can infer, and how to make 
 
 ### Featured work
 
-<p align="center">
-  <a href="https://github.com/Hanyuyuan6/STSF-TPLS"><img src="assets/card-stsf-tpls-monolith.webp" width="420" alt="STSF-TPLS (arXiv 2026, PyTorch): Image-free sensing can be more robust to measurement noise than reconstructing an image first. Context: Single-pixel segmentation · clean training, noisy testing."></a>
-  <a href="https://github.com/Hanyuyuan6/remote-gpu-trainer"><img src="assets/card-remote-gpu-trainer-monolith.webp" width="420" alt="remote-gpu-trainer (Agent skill, Python): Open-source agent skill for Claude Code and Codex that runs, verifies and delivers GPU experiments."></a>
-</p>
+<table width="100%">
+  <tr>
+    <td width="50%" align="center"><a href="https://github.com/Hanyuyuan6/STSF-TPLS"><img src="assets/card-stsf-tpls-g4.webp" width="100%" alt="STSF-TPLS (arXiv 2026, PyTorch): Image-free sensing can be more robust to measurement noise than reconstructing an image first. Context: Single-pixel segmentation · clean training, noisy testing."></a></td>
+    <td width="50%" align="center"><a href="https://github.com/Hanyuyuan6/remote-gpu-trainer"><img src="assets/card-remote-gpu-trainer-g4.webp" width="100%" alt="remote-gpu-trainer (Agent skill, Python): Open-source agent skill for Claude Code and Codex that runs, verifies and delivers GPU experiments."></a></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><a href="https://github.com/Hanyuyuan6/SHSI"><img src="assets/card-shsi-g4.webp" width="100%" alt="SHSI (Optics Express 2025, MATLAB): Tunable sparse Hadamard patterns preserve orthogonality and improve noise resilience, supported by a sparsity-dependent noise model. Context: Measurement design · theory and optical experiments."></a></td>
+    <td width="50%" align="center"><a href="https://github.com/Hanyuyuan6/LDGI"><img src="assets/card-ldgi-g4.webp" width="100%" alt="LDGI (Optics Communications 2025, MATLAB): Loop differential ghost imaging corrects spatial noise asymmetry in ghost imaging with one-dimensional optical phased-array line patterns. Context: Optical validation with spatial-light-modulator-generated line patterns."></a></td>
+  </tr>
+</table>
 
-<p align="center">
-  <a href="https://github.com/Hanyuyuan6/SHSI"><img src="assets/card-shsi-monolith.webp" width="420" alt="SHSI (Optics Express 2025, MATLAB): Tunable sparse Hadamard patterns preserve orthogonality and improve noise resilience, supported by a sparsity-dependent noise model. Context: Measurement design · theory and optical experiments."></a>
-  <a href="https://github.com/Hanyuyuan6/LDGI"><img src="assets/card-ldgi-monolith.webp" width="420" alt="LDGI (Optics Communications 2025, MATLAB): Loop differential ghost imaging corrects spatial noise asymmetry in ghost imaging with one-dimensional optical phased-array line patterns. Context: Optical validation with spatial-light-modulator-generated line patterns."></a>
-</p>
-
-<p align="center"><sub>Optical-volume animations are conceptual illustrations. <a href="VISUALS.md">View still images</a>.</sub></p>
+<p align="center"><sub>Animations are conceptual illustrations. <a href="VISUALS.md">View still images</a>.</sub></p>
 
 <details>
 <summary><b>Papers and more code</b></summary>
