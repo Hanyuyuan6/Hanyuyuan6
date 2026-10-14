@@ -1,0 +1,220 @@
+{
+  "version": 1,
+  "concept": "Optical Monolith",
+  "description": "Synthetic three-dimensional concept artwork; no measured data or research results.",
+  "period_ms": 8000,
+  "fps": 20,
+  "source": {
+    "scripts/build_spatial_assets.mjs": "b56019b5a68bfd03ef7e13d1261ac92d180f4df842683d14ac29f09d1a1e0242",
+    "scripts/spatial-motion.js": "9cd0e19486d9376a9a24343f2e65d7195a7a06e8bfdab278081ec9bfb218acd5",
+    "data/profile-display.json": "ad5d7d58270a517464f1178fda7aa1be5818124edb364a84d8c223741300102a",
+    "fonts": {
+      "NotoSans-Regular.ttf": "f5f552c8c5edb61fe6efb824baf4d4de47b1a8689ab4925ff43f7bd6a4ebece5",
+      "NotoSans-Bold.ttf": "3a08a47daa00cade516425c15c57615aef2fd418ec9811a7b9f465088f92cc05"
+    }
+  },
+  "assets": [
+    {
+      "file": "assets/hero-monolith.webp",
+      "format": "WebP",
+      "width": 1280,
+      "height": 416,
+      "frames": 160,
+      "loop": 0,
+      "fps": 20,
+      "duration_ms": 8000,
+      "bytes": 485512,
+      "sha256": "918c2177431a6810a7246f37b6d231c1d6077348665a701275e9f641a2db25f2",
+      "still": {
+        "file": "assets/hero-monolith-still.png",
+        "format": "PNG",
+        "width": 1280,
+        "height": 416,
+        "frames": 1,
+        "bytes": 244458,
+        "sha256": "7d166a742818db87ed7fe080528bd92078e9e75bdcefd5dd47997cd6a2cb1ec5"
+      },
+      "phase_offset_seconds": 0,
+      "quality": 78,
+      "title": "Yuyuan Han. Computational imaging & robust image-free sensing. PhD student, Xi'an Jiaotong University.",
+      "verification": {
+        "source_loop_endpoint_exact": true,
+        "static_type_exact_at_seconds": [
+          1,
+          10,
+          20
+        ],
+        "source_sample_frames_distinct": 4,
+        "source_motion_sha256": {
+          "1": "3b277a609e48426cb6d4475a6938c3e73a8cbddfcfb02e56ebe1bebcf64f0e10",
+          "10": "1dff62dafc6920b8fe25f46303e5453cd177d419d34c5ada89d4e65f98f7d934",
+          "20": "004dcc51e8c21dcac2f414d3a5697bee319044b5b44d85890eed37ebe09b8253"
+        }
+      }
+    },
+    {
+      "file": "assets/card-stsf-tpls-monolith.webp",
+      "format": "WebP",
+      "width": 640,
+      "height": 240,
+      "frames": 160,
+      "loop": 0,
+      "fps": 20,
+      "duration_ms": 8000,
+      "bytes": 218270,
+      "sha256": "18b530b7717275a62c44ae292a863be8806d4478c10dd3f2032065039fe37047",
+      "still": {
+        "file": "assets/card-stsf-tpls-monolith-still.png",
+        "format": "PNG",
+        "width": 640,
+        "height": 240,
+        "frames": 1,
+        "bytes": 65212,
+        "sha256": "e9fe52fc35e0f24449afb33cbb71e6bf153dca21aaf09642c577cfe964704784"
+      },
+      "phase_offset_seconds": 0,
+      "quality": 76,
+      "title": "STSF-TPLS",
+      "venue": "arXiv 2026",
+      "language": "PyTorch",
+      "link": "https://github.com/Hanyuyuan6/STSF-TPLS",
+      "verification": {
+        "source_loop_endpoint_exact": true,
+        "static_type_exact_at_seconds": [
+          1,
+          10,
+          20
+        ],
+        "source_sample_frames_distinct": 4,
+        "source_motion_sha256": {
+          "1": "7a784ff3f8d883a7bb01b25609cad519308358d99ff0a6c53b51650b9b379e37",
+          "10": "2fb335c698bd91a947a5a42a4ad7d3ece0f21d5c81f4118d143a108fb87ce1b3",
+          "20": "fc2fcdc04471363bfc23aa2d12b1e674d3f9d4db63df2c82db30534a38237574"
+        }
+      }
+    },
+    {
+      "file": "assets/card-remote-gpu-trainer-monolith.webp",
+      "format": "WebP",
+      "width": 640,
+      "height": 240,
+      "frames": 160,
+      "loop": 0,
+      "fps": 20,
+      "duration_ms": 8000,
+      "bytes": 219656,
+      "sha256": "b10e4d5dec7a90e3bebf561877924c1d2bef84bfbd4dd7a57f9c3ec5671e37bd",
+      "still": {
+        "file": "assets/card-remote-gpu-trainer-monolith-still.png",
+        "format": "PNG",
+        "width": 640,
+        "height": 240,
+        "frames": 1,
+        "bytes": 69159,
+        "sha256": "19668e9a2b3498a920a284d877f6fee95956f42498cb2aa4c410f19ac092cacd"
+      },
+      "phase_offset_seconds": 1.35,
+      "quality": 76,
+      "title": "remote-gpu-trainer",
+      "venue": "Agent skill",
+      "language": "Python",
+      "link": "https://github.com/Hanyuyuan6/remote-gpu-trainer",
+      "verification": {
+        "source_loop_endpoint_exact": true,
+        "static_type_exact_at_seconds": [
+          1,
+          10,
+          20
+        ],
+        "source_sample_frames_distinct": 4,
+        "source_motion_sha256": {
+          "1": "a0948ed96500398e6337a611006db63b09e17285d04e5ac8bb306cfc94c4c89e",
+          "10": "770e57b958ef06d45b15f9c91d1a2d2617757f5987473329b0a5ca8803cf7708",
+          "20": "b300b7edcb0af22d452f405b0d8df1401b01e0fd5388d6f183a8cf3d13528dd4"
+        }
+      }
+    },
+    {
+      "file": "assets/card-shsi-monolith.webp",
+      "format": "WebP",
+      "width": 640,
+      "height": 240,
+      "frames": 160,
+      "loop": 0,
+      "fps": 20,
+      "duration_ms": 8000,
+      "bytes": 218834,
+      "sha256": "5ec023fa00f7120ff3e62fa1a00b38a28db454e5daa471dcafb66d050337f000",
+      "still": {
+        "file": "assets/card-shsi-monolith-still.png",
+        "format": "PNG",
+        "width": 640,
+        "height": 240,
+        "frames": 1,
+        "bytes": 66398,
+        "sha256": "da874bf2c58334c5828d40bf5efd261f297842d8da3be630ab1fb9bcc405335d"
+      },
+      "phase_offset_seconds": 3.1,
+      "quality": 76,
+      "title": "SHSI",
+      "venue": "Optics Express 2025",
+      "language": "MATLAB",
+      "link": "https://github.com/Hanyuyuan6/SHSI",
+      "verification": {
+        "source_loop_endpoint_exact": true,
+        "static_type_exact_at_seconds": [
+          1,
+          10,
+          20
+        ],
+        "source_sample_frames_distinct": 4,
+        "source_motion_sha256": {
+          "1": "4a956bb6f78ad4ac4855709f41c7d1d03ad9dda2913cecb61c09ff30e76a7c79",
+          "10": "3e632b3ee5f374b72b2152047fb36ab014b80705f65fd8e81b07954b0787e04e",
+          "20": "afc8036705c13e8f0943416a9bfb66cd9e5ae17bc52a992571aa29426c8ac151"
+        }
+      }
+    },
+    {
+      "file": "assets/card-ldgi-monolith.webp",
+      "format": "WebP",
+      "width": 640,
+      "height": 240,
+      "frames": 160,
+      "loop": 0,
+      "fps": 20,
+      "duration_ms": 8000,
+      "bytes": 219136,
+      "sha256": "63d7026c950cb494102d6fc6df22649019be3253a35d147b32076ca9d64c26ea",
+      "still": {
+        "file": "assets/card-ldgi-monolith-still.png",
+        "format": "PNG",
+        "width": 640,
+        "height": 240,
+        "frames": 1,
+        "bytes": 64979,
+        "sha256": "539dd057c89e87b2dc6efb00a793da8d424998f8e5d147cad4552d91a3499066"
+      },
+      "phase_offset_seconds": 5.3,
+      "quality": 76,
+      "title": "LDGI",
+      "venue": "Optics Communications 2025",
+      "language": "MATLAB",
+      "link": "https://github.com/Hanyuyuan6/LDGI",
+      "verification": {
+        "source_loop_endpoint_exact": true,
+        "static_type_exact_at_seconds": [
+          1,
+          10,
+          20
+        ],
+        "source_sample_frames_distinct": 4,
+        "source_motion_sha256": {
+          "1": "ade7ad290537789dc2856f01b8c492b3cba461028da5e0ef39372936169a6552",
+          "10": "18901d00a8e7e1b493061210e5a34fbe1c18d8abdeabe82af9968314414e9503",
+          "20": "91fd586f3148d8f8be756592dd425bed36b57be346aa5738b77be651409db9e2"
+        }
+      }
+    }
+  ]
+}
