@@ -1,6 +1,6 @@
 {
   "generated_from": "Hanyuyuan6/hanyuyuan6.github.io:profile.json",
-  "source_public_fields_sha256": "a93bdc9b5330696d4b3ff5c4b1857059f140f353051e4a120e72003930f032bb",
+  "source_public_fields_sha256": "d2e875b4da5130053e05913e0a10980937ce664b5bdc7eba523c9277a53d51d3",
   "profile": {
     "person": {
       "name": "Yuyuan Han",
@@ -12,7 +12,7 @@
       "hero": "How optical measurements shape what machines can infer.",
       "short_bio": "I study how optical measurements shape what machines can infer, and how to make that inference reliable with limited, noisy data. I connect measurement design, reconstruction and direct inference to understand what makes perception robust.",
       "current_summary": "Time-domain diffuse optical tomography for 3D brain imaging; acquisition-aware single-pixel sensing on an optical bench; exploratory question answering from measurements with a frozen vision–language model.",
-      "welcome": "I welcome collaborations in AI for Science and Science for AI, especially where physical measurement meets computational imaging and machine perception. I am also open to research internships.",
+      "welcome": "I welcome research collaborations in AI for Science and Science for AI, especially at the interface of physical measurement and machine intelligence. I am also interested in physical and embodied AI, and in how reliable perception and physical reasoning could contribute to artificial general intelligence (AGI). Research internship opportunities are welcome.",
       "long_term": "My long-term aim is to help robots interpret the physical world from raw measurements and physical models."
     },
     "projects": [
