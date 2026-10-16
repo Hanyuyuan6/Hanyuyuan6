@@ -14,7 +14,8 @@ I study how optical measurements shape what machines can infer, and how to make 
 
 - **Now:** Time-domain diffuse optical tomography for 3D brain imaging; acquisition-aware single-pixel sensing on an optical bench; exploratory question answering from measurements with a frozen vision–language model.
 - **Long term:** help robots interpret the physical world from raw measurements and physical models.
-- **Open to:** research collaborations and internships in computational imaging, image-free sensing and machine perception.
+
+I welcome collaborations in AI for Science and Science for AI, especially where physical measurement meets computational imaging and machine perception. I am also open to research internships.
 
 ### Featured work
 

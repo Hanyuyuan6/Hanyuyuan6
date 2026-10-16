@@ -441,7 +441,7 @@ def sync_readme(data: dict):
     biography = (n['short_bio'] + '\n\n'
                  f"- **Now:** {n['current_summary']}\n"
                  f"- **Long term:** {n['long_term'].removeprefix('My long-term aim is to ')}\n"
-                 f"- **Open to:** {n['welcome'].removeprefix('I am open to ')}")
+                 f"\n{n['welcome']}")
     start, end = text.index('\nI study '), text.index('\n\n### Featured work')
     text = text[:start] + '\n' + biography + text[end:]
     for spec in CARDS:
