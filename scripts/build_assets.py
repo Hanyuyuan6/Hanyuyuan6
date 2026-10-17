@@ -433,10 +433,12 @@ def sync_readme(data: dict):
     """Retain every existing link and project title; replace only source-derived display text."""
     path = ROOT / 'README.md'
     text = path.read_text(encoding='utf-8')
-    text = re.sub(r'(<img src="assets/hero.svg"[^>]* alt=")[^"]*',
-                  lambda m: m.group(1) + escape(_hero_title(data['narrative']['hero']), {'"': '&quot;'}), text, count=1)
-    text = re.sub(r'<sub>.*?</sub>', '<sub>Concept illustration with synthetic optical signals and schematic brain slices.</sub>',
-                  text, count=1)
+    person = data['person']
+    hero_title = (f"{person['name']}. {data['narrative']['field']}. "
+                  f"{person['position']}, {person['institution']}.")
+    text = re.sub(r'(<img src="assets/(hero\.svg|hero-monolith\.webp)"[^>]* alt=")[^"]*',
+                  lambda m: m.group(1) + escape(_hero_title(data['narrative']['hero']) if m.group(2) == 'hero.svg' else hero_title,
+                                               {'"': '&quot;'}), text, count=1)
     n = data['narrative']
     biography = (n['short_bio'] + '\n\n'
                  f"- **Now:** {n['current_summary']}\n"
@@ -447,7 +449,7 @@ def sync_readme(data: dict):
     for spec in CARDS:
         note = f" Context: {spec['context']}." if spec.get('context') else ''
         alt = f"{spec['name']} ({spec['venue']}, {spec['language']}): {spec['summary']}{note}"
-        pattern = rf'(<img src="assets/card-{re.escape(spec["slug"])}.svg"[^>]* alt=")[^"]*'
+        pattern = rf'(<img src="assets/card-{re.escape(spec["slug"])}(?:-(?:g4|monolith))?\.(?:svg|webp)"[^>]* alt=")[^"]*'
         text = re.sub(pattern, lambda m: m.group(1) + escape(alt, {'"': '&quot;'}), text, count=1)
     path.write_text(text, encoding='utf-8', newline='\n')
 
