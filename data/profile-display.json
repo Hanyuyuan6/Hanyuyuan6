@@ -1,6 +1,6 @@
 {
   "generated_from": "Hanyuyuan6/hanyuyuan6.github.io:profile.json",
-  "source_public_fields_sha256": "0d15e081e8ca2981e87cf8c051efe9ad8e8d492c4192f892f46c643ee12f8fc0",
+  "source_public_fields_sha256": "9945f79eebaf64372749b00e6939cd2a96b23fbbb894bc4d8fa238c78f08934e",
   "profile": {
     "person": {
       "name": "Yuyuan Han",
@@ -9,8 +9,8 @@
     },
     "narrative": {
       "field": "Computational imaging & robust image-free sensing",
-      "hero": "How optical measurements shape what machines can infer.",
-      "short_bio": "I study how optical measurements shape what machines can infer, and how to make that inference reliable with limited, noisy data. I connect measurement design, reconstruction and direct inference to understand what makes perception robust.",
+      "hero": "An image is not always the most robust route to inference.",
+      "short_bio": "An image is not always the most robust route to inference. I study reliable sensing under limited sampling and measurement noise, connecting optical measurement design, image reconstruction and direct inference from single-pixel measurements.",
       "current_summary": "Time-domain diffuse optical tomography for 3D brain imaging; acquisition-aware single-pixel sensing on an optical bench; exploratory question answering from measurements with a frozen vision–language model.",
       "welcome": "I welcome research collaborations and internships that combine measurements and physical models to help machines learn and reason reliably, with applications in scientific discovery and embodied systems.",
       "long_term": "My long-term aim is to help robots interpret the physical world from raw measurements and physical models."

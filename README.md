@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://hanyuyuan6.github.io/"><img src="assets/hero-monolith.webp" width="100%" alt="Yuyuan Han. Computational imaging & robust image-free sensing. PhD student, Xi'an Jiaotong University."></a>
+  <a href="https://hanyuyuan6.github.io/"><img src="assets/hero-monolith.webp" width="100%" alt="Yuyuan Han. Computational imaging &amp; robust image-free sensing. PhD student, Xi'an Jiaotong University."></a>
 </p>
 
 <p align="center">
@@ -10,7 +10,7 @@
   <a href="mailto:hanyuyuan6@gmail.com"><img src="assets/badge-email.svg" alt="Email: hanyuyuan6@gmail.com"></a>
 </p>
 
-I study how optical measurements shape what machines can infer, and how to make that inference reliable with limited, noisy data. I connect measurement design, reconstruction and direct inference to understand what makes perception robust.
+An image is not always the most robust route to inference. I study reliable sensing under limited sampling and measurement noise, connecting optical measurement design, image reconstruction and direct inference from single-pixel measurements.
 
 - **Now:** Time-domain diffuse optical tomography for 3D brain imaging; acquisition-aware single-pixel sensing on an optical bench; exploratory question answering from measurements with a frozen vision–language model.
 - **Long term:** help robots interpret the physical world from raw measurements and physical models.
