@@ -33,7 +33,7 @@ Needs Pillow and librsvg's rsvg-convert. Never imports scripts/build_assets.py: 
 7. Compact view: rebuilt as its own document (as a narrow image shows it), it must pass 1-3, keep the
    data trace or brain illustration, and replace every full-layout text run.
 
-Origin: the identity checker (design/claude/scripts/check_identity.py), whose blanket ban on
+Origin: an earlier identity checker, whose blanket ban on
 @keyframes and animation is replaced by the stricter motion policy in 5-6; every other check is kept.
 """
 from __future__ import annotations
